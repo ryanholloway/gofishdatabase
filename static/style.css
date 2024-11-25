@@ -1,0 +1,342 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #4CAF50; 
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+        url('./images/felt.png');
+    background-size: cover;
+    background-blend-mode: multiply;
+    color: #fff; 
+    text-align: center;
+    margin:0;
+    padding:0;
+}
+
+h1{
+    color: #fff;
+    margin-top: 20px;
+}
+
+.computer-turn-message {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-style: italic;
+    color: #555;
+    border-radius: 5px; 
+}
+
+
+.hidden-radio {
+    display: none;
+}
+
+.hidden-radio:checked + .card-image{
+    border: 2px solid #ff1717;
+    box-shadow: 0 0 10px rgba(238, 26, 26, 0.5);
+}
+
+.player-pairs-button {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 100%;
+    text-align: inherit;
+    color:white;
+    cursor: pointer;
+}
+
+.player-pairs-button .player-pairs {
+    display: block;
+    width: 100%;
+}
+.game-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.computer-pairs, .player-pairs {
+    width: 100px;
+    text-align: center;
+}
+.card-stack {
+    position: relative;
+    margin-bottom: -70px;
+}
+
+
+.small-card {
+    width: 50px;
+    margin: 5px 0;
+}
+.card-image {
+    width: 100px;
+    margin: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+.card-image:hover{
+    border-color: #ff0a0a;
+}
+
+.main-game {
+    text-align: center;
+}
+
+.card-back {
+    width: 100px;
+    margin: 5px;
+}
+.ask-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    position: fixed;
+    bottom: 50px;  
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.ask-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ask-button:focus {
+    outline: 2px solid #ffdd57;
+    outline-offset: 2px;
+}
+
+.ask-button:active {
+    background-color: #004080;
+}
+
+
+.play-again-button{
+    display: inline-block;
+    background-color: #004080;
+    color:white;
+    border:none;
+    padding:15px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none !important;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top:20px;
+    cursor: pointer;
+}
+
+.play-again-button:hover{
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.play-again-button:focus{
+    outline: 2px solid #ffdd57;
+    outline-offset: 2px;
+}
+
+.play-again-button:active{
+    background-color: #003366;
+    transform: scale(0.95);
+}
+
+.start-screen {
+    text-align: center;
+    border-radius: 8px;
+    padding: 40px; 
+    margin: 20px; 
+}
+
+.start-button:hover {
+    background-color: #970202;
+}
+
+.card {
+    position: absolute; 
+    width: 100px; 
+    height: auto; 
+    transition: transform 0.3s; 
+}
+
+.card:hover {
+    transform: scale(1.1);
+}
+
+
+/*Rules HTML CSS*/
+.start-button,.rules-button, .back-to-game-button, .leaderboard-button {
+    background-color: #ff0a0a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    margin-bottom: 15px;
+}
+
+.rules-button:hover, .back-to-game-button:hover, .leaderboard-button:hover {
+    background-color: #970202;
+}
+
+.rules-content {
+    text-align: left;
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+
+.rules-content p {
+    font-size: 25px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.rules-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    color: #000000;
+}
+
+.rules-content li {
+    font-size: 20px;
+    margin: 8px 0;
+}
+
+
+.computer-turn-request {
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+.computer-turn-request p {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.computer-turn-request button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.computer-turn-request button:hover {
+    background-color: #0056b3;
+}
+
+/* Separate styling for Yes and Go Fish buttons */
+.computer-turn-request .yes-button {
+    background-color: #28a745;
+}
+
+.computer-turn-request .go-fish-button {
+    background-color: #dc3545;
+}
+
+.computer-turn-request .yes-button:hover {
+    background-color: #218838;
+}
+
+.computer-turn-request .go-fish-button:hover {
+    background-color: #c82333;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.register {
+    text-align: center;
+    margin: 2rem auto;
+}
+
+.register input[type="text"], 
+.register input[type="submit"] {
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.register input[type="submit"] {
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+
+.register input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+.error {
+    color: red;
+    margin-top: 1rem;
+}
+
+/* Ensure the leaderboard section looks good */
+.leaderboard {
+    text-align: center;
+    margin: 2rem auto;
+    width: 80%;
+}
+
+/* Style the table */
+.leaderboard table {
+    width: 100%;
+    margin: 1rem auto;
+    border-collapse: collapse;  /* Merge table borders */
+    text-align: left;
+    font-size: 1rem;
+}
+
+/* Style the table headers */
+.leaderboard th, .leaderboard td {
+    border: 1px solid #ccc;  /* Light gray borders */
+    padding: 0.8rem;  /* Add padding inside cells */
+    text-align: center;
+}
+
+/* Style for table headers (bold and colored) */
+.leaderboard th {
+    background-color: #007BFF;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* Button to go back */
+.back-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-btn:hover {
+    background-color: #0056b3;
+}
+

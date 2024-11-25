@@ -1,0 +1,24 @@
+
+<!-- Not being used -->
+
+{% extends "base.html" %}
+{% block content %}
+<div class="result-screen">
+    <h2>Your Pairs:</h2>
+    <div class="player-cards">
+        {% if player_pairs %}
+            {% for card in player_pairs %}
+                <label class="pair-label">
+                    <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="card-image">
+                </label>
+            {% endfor %}
+        {% else %}
+            <div class="pair">No pairs found.</div>
+        {% endif %}
+    </div>
+
+    <form action="{{ url_for('game') }}" method="get">
+        <button type="submit" class="back-to-game-button">Back to Game</button>
+    </form>
+</div>
+{% endblock %}

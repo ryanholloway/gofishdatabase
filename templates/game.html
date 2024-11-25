@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="game-container">
+    <div class="computer-pairs">
+        <h3>Computer's Pairs</h3>
+        {% for card in computer_pairs %}
+        <div class = "card-stack">
+            <img src="{{ url_for('static', filename='cards/2B.svg') }}" alt="{{ card }}" class="small-card">
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="main-game">
+
+        <div class="computer-hand">
+            <h2>Computer's Hand:</h2>
+            {% for _ in computer %}
+                <img src="{{ url_for('static', filename='cards/2B.svg') }}" alt="Computer Card Back" class="card-back">
+            {% endfor %}
+        </div>
+
+        <div class="player-hand">
+            <h2>Your Hand:</h2>
+            <form action="{{ url_for('player_turn') }}" method="post" class="card-selection-form">
+                {% for card in player %}
+                    <label class="card-label">
+                        <input type="radio" name="selected_card" value="{{ card }}" class="hidden-radio"  required>
+                        <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="card-image">
+                    </label>
+                {% endfor %}
+                <button type="submit" class="ask-button {% if not session['is_player_turn'] %}hidden{% endif %}">Ask for Card</button>
+            </form>
+        </div>
+    </div>
+
+    <form action="{{ url_for('view_pairs') }}" method="get">
+        <button type="submit" class="player-pairs-button">
+        <div class="player-pairs">
+            <h3>Your Pairs</h3>
+            {% for card in player_pairs %}
+            <div class = "card-stack">
+                <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="small-card">
+            </div>
+            {% endfor %}
+        </div>
+    </button>
+    </form>
+</div>
+
+
+{% if message and "Computer asks for" in message %}
+<div class="computer-turn-request">
+    <p>{{ message }}</p>
+    <form action="{{ url_for('computer_request_response') }}" method="post">
+        <button type="submit" name="response" value="Yes" class="yes-button">Yes</button>
+        <button type="submit" name="response" value="Go Fish" class="go-fish-button">Go Fish</button>
+    </form>
+</div>
+{% endif %}
+
+
+   
+</form>
+
+{% endblock %}

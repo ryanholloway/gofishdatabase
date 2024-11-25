@@ -1,0 +1,30 @@
+
+-- Create the players table
+CREATE TABLE players (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    handle VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Create the games table
+CREATE TABLE games (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    player_id INT,
+    score INT NOT NULL,
+    played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    winner ENUM('Player', 'Computer') NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES players(id)
+);
+
+-- Create the leaderboard view (selects the highest score and the last played timestamp for each player)
+CREATE VIEW leaderboard AS
+SELECT 
+    p.handle, 
+    COUNT(g.id) AS games_won, 
+    MAX(g.score) AS highscore, 
+    MAX(g.played_at) AS highscore_achieved_at 
+FROM players p
+JOIN games g ON p.id = g.player_id
+WHERE g.winner = 'Player'
+GROUP BY p.handle
+ORDER BY highscore DESC
+LIMIT 10;

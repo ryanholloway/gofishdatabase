@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="register">
+    <h2>Register or Log In</h2>
+    <form action="{{ url_for('register') }}" method="post">
+        <label for="handle">Enter your unique handle:</label><br>
+        <input type="text" id="handle" name="handle" placeholder="e.g. Player123" required><br><br>
+        <input type="submit" value="Register / Log In">
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+</section>
+{% endblock %}

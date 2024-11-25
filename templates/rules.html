@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="result-screen">
+    <h2>Game Rules:</h2>
+    <div class="rules-content">
+        <p>Welcome to the game! Here are the controls:</p>
+        <ul>
+            <li>Click a card to select it and press Ask for card</li>
+            <li>Match pairs to score points.</li>
+            <li>The player with the most pairs wins.</li>
+            <li>Click on the player pairs to see what pairs you have</li>
+            <li>Press 'Back to Game' to return to the game screen.</li>
+        </ul>
+    </div>
+
+    <form action="{{ url_for('home') }}" method="get">
+        <button type="submit" class="back-to-game-button">Back</button>
+    </form>
+</div>
+{% endblock %}

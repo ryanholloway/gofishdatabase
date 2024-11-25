@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="leaderboard">
+    <h2>Top 10 Leaderboard</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Player Handle</th>
+                <th>Games Won</th>
+                <th>Highscore</th>
+                <th>Highscore Achieved At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in leaderboard %}
+                <tr>
+                    <td>{{ loop.index }}</td>  <!-- Rank -->
+                    <td>{{ entry.handle }}</td> <!-- Player handle -->
+                    <td>{{ entry.games_won }}</td> <!-- Games won -->
+                    <td>{{ entry.highscore }}</td> <!-- Highscore -->
+                    <td>{{ entry.highscore_achieved_at }}</td> <!-- Highscore timestamp -->
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No leaderboard data available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a class="back-btn" href="{{ url_for('home') }}">Back to Home</a>
+</section>
+{% endblock %}

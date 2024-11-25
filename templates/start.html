@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="start-screen">
+        <p>Press Start Game to Begin</p>
+        <form action="{{ url_for('start_game') }}" method="post">
+            <button type="submit" class="start-button">Start Game</button>
+        </form>
+        <form action="{{ url_for('rules') }}" method="get">
+            <button type="submit" class="rules-button">View Rules</button>
+        </form>
+        <form action="{{ url_for('leaderboard') }}" method="get">
+            <button type="submit" class="leaderboard-button">Leaderboard</button>
+        </form>
+    
+    </div>
+
+    <div id="card-container">
+        <img src="static/cards/2 of Hearts.svg" class="card" style="left: 5%; top: 10%; transform: rotate(15deg);">
+        <img src="static/cards/10 of Spades.svg" class="card" style="left: 40%; top: 20%; transform: rotate(-10deg);">
+        <img src="static/cards/King of Diamonds.svg" class="card" style="left: 75%; top: 50%; transform: rotate(20deg);">
+        <img src="static/cards/5 of Clubs.svg" class="card" style="left: 15%; top: 70%; transform: rotate(-15deg);">
+        <img src="static/cards/Queen of Spades.svg" class="card" style="left: 60%; top: 15%; transform: rotate(30deg);">
+        <img src="static/cards/Ace of Hearts.svg" class="card" style="left: 80%; top: 60%; transform: rotate(-25deg);">
+        <img src="static/cards/3 of Diamonds.svg" class="card" style="left: 30%; top: 40%; transform: rotate(10deg);">
+        <img src="static/cards/7 of Clubs.svg" class="card" style="left: 50%; top: 70%; transform: rotate(-5deg);">
+    </div>
+{% endblock %}
