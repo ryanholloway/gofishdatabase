@@ -8,23 +8,13 @@ body {
     background-blend-mode: multiply;
     color: #fff; 
     text-align: center;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 
-h1{
+h1 {
     color: #fff;
     margin-top: 20px;
-}
-
-.computer-turn-message {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 15px;
-    font-style: italic;
-    color: #555;
-    border-radius: 5px; 
 }
 
 
@@ -32,7 +22,7 @@ h1{
     display: none;
 }
 
-.hidden-radio:checked + .card-image{
+.hidden-radio:checked + .card-image {
     border: 2px solid #ff1717;
     box-shadow: 0 0 10px rgba(238, 26, 26, 0.5);
 }
@@ -43,18 +33,24 @@ h1{
     padding: 0;
     width: 100%;
     text-align: inherit;
-    color:white;
+    color: white;
     cursor: pointer;
 }
 
-.player-pairs-button .player-pairs {
-    display: block;
-    width: 100%;
+.player-pairs {
+    position: absolute;
+    right: 20px; 
+    text-align: center;
+    transform: translateX(0);
+}
+.computer-pairs {
+    margin-right: auto; /* Keeps computer-pairs aligned to the left */
+    text-align: center;
 }
 .game-container {
     display: flex;
-    align-items: flex-start;
     justify-content: space-between;
+    align-items: flex-start;
     padding: 20px;
 }
 
@@ -62,16 +58,17 @@ h1{
     width: 100px;
     text-align: center;
 }
+
 .card-stack {
     position: relative;
     margin-bottom: -70px;
 }
 
-
 .small-card {
     width: 50px;
     margin: 5px 0;
 }
+
 .card-image {
     width: 100px;
     margin: 5px;
@@ -79,18 +76,26 @@ h1{
     border: 2px solid transparent;
     transition: border-color 0.2s;
 }
-.card-image:hover{
+
+.card-image:hover {
     border-color: #ff0a0a;
 }
 
 .main-game {
     text-align: center;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
 }
 
 .card-back {
     width: 100px;
     margin: 5px;
 }
+
 .ask-button {
     background-color: #007bff;
     color: white;
@@ -102,7 +107,7 @@ h1{
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     position: fixed;
-    bottom: 50px;  
+    bottom: -60%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -122,33 +127,32 @@ h1{
     background-color: #004080;
 }
 
-
-.play-again-button{
+.play-again-button {
     display: inline-block;
     background-color: #004080;
-    color:white;
-    border:none;
-    padding:15px 30px;
+    color: white;
+    border: none;
+    padding: 15px 30px;
     font-size: 24px;
     font-weight: bold;
     border-radius: 5px;
     text-decoration: none !important;
     transition: background-color 0.3s, transform 0.2s;
-    margin-top:20px;
+    margin-top: 20px;
     cursor: pointer;
 }
 
-.play-again-button:hover{
+.play-again-button:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-.play-again-button:focus{
+.play-again-button:focus {
     outline: 2px solid #ffdd57;
     outline-offset: 2px;
 }
 
-.play-again-button:active{
+.play-again-button:active {
     background-color: #003366;
     transform: scale(0.95);
 }
@@ -156,8 +160,8 @@ h1{
 .start-screen {
     text-align: center;
     border-radius: 8px;
-    padding: 40px; 
-    margin: 20px; 
+    padding: 40px;
+    margin: 20px;
 }
 
 .start-button:hover {
@@ -165,19 +169,18 @@ h1{
 }
 
 .card {
-    position: absolute; 
-    width: 100px; 
-    height: auto; 
-    transition: transform 0.3s; 
+    position: absolute;
+    width: 100px;
+    height: auto;
+    transition: transform 0.3s;
 }
 
 .card:hover {
     transform: scale(1.1);
 }
 
-
-/*Rules HTML CSS*/
-.start-button,.rules-button, .back-to-game-button, .leaderboard-button {
+/* Rules HTML CSS */
+.start-button, .rules-button, .back-to-game-button, .leaderboard-button {
     background-color: #ff0a0a;
     color: white;
     border: none;
@@ -199,7 +202,6 @@ h1{
     max-width: 400px;
 }
 
-
 .rules-content p {
     font-size: 25px;
     font-weight: 500;
@@ -216,7 +218,6 @@ h1{
     font-size: 20px;
     margin: 8px 0;
 }
-
 
 .computer-turn-request {
     padding: 15px;
@@ -290,6 +291,7 @@ h1{
 .register input[type="submit"]:hover {
     background-color: #0056b3;
 }
+
 .error {
     color: red;
     margin-top: 1rem;
@@ -314,6 +316,7 @@ h1{
     padding: 0.8rem;  /* Add padding inside cells */
     text-align: center;
 }
+
 .leaderboard th {
     background-color: #007BFF;
     color: white;
@@ -333,7 +336,8 @@ h1{
 .back-btn:hover {
     background-color: #0056b3;
 }
-.home-button{
+
+.home-button {
     background-color: #ff0a0a;
     color: white;
     border: none;
@@ -343,6 +347,53 @@ h1{
     font-size: 20px;
     position: absolute;
     left: 3%;
-    bottom:90%;
+    bottom: 90%;
 }
+
+
+#computer-message {
+    color: #fff; /* White text */
+    font-style: italic;
+    font-size: 18px;
+    position: absolute;
+    top: 70%; /* Position below the cards */
+    left: 50%;
+    transform: translateX(-50%);
+    visibility: visible; /* Ensure it's visible */
+    z-index: 100;
+}
+
+/* Styling for the buttons inside the computer message */
+#computer-message button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#computer-message button:hover {
+    background-color: #0056b3;
+}
+
+/* Specific styling for 'Yes' and 'Go Fish' buttons */
+#computer-message .yes-button {
+    background-color: #28a745;
+}
+
+#computer-message .go-fish-button {
+    background-color: #dc3545;
+}
+
+#computer-message .yes-button:hover {
+    background-color: #218838;
+}
+
+#computer-message .go-fish-button:hover {
+    background-color: #c82333;
+}
+
 

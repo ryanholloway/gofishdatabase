@@ -3,67 +3,46 @@
 {% block content %}
 <div class="game-container">
     <!-- Computer Pairs Section -->
-    <div class="computer-pairs">
-        <h3>Computer's Pairs</h3>
-        {% for card in computer_pairs %}
-        <div class="card-stack">
-            <img src="{{ url_for('static', filename='cards/2B.svg') }}" alt="{{ card }}" class="small-card">
-        </div>
-        {% endfor %}
+    <div id="computer-pairs" hx-target="this" hx-swap="outerHTML">
+        {% include '/partials/computer_pairs.html' %}
     </div>
 
     <div class="main-game">
         <!-- Computer's Hand Section -->
-        <div class="computer-hand">
-            <h2>Computer's Hand:</h2>
-            {% for _ in computer %}
-                <img src="{{ url_for('static', filename='cards/2B.svg') }}" alt="Computer Card Back" class="card-back">
-            {% endfor %}
+        <div id="computer-hand" hx-target="this" hx-swap="outerHTML">
+            {% include '/partials/computer_hand.html' %}
         </div>
 
         <!-- Player's Hand Section -->
-        <div class="player-hand">
-            <h2>Your Hand:</h2>
-            <form action="{{ url_for('player_turn') }}" method="post" class="card-selection-form" hx-target="#game-content" hx-swap="innerHTML">
-                {% for card in player %}
-                    <label class="card-label">
-                        <input type="radio" name="selected_card" value="{{ card }}" class="hidden-radio" required>
-                        <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="card-image">
-                    </label>
-                {% endfor %}
-                <button type="submit" class="ask-button {% if not session['is_player_turn'] %}hidden{% endif %}">Ask for Card</button>
-            </form>
+        <div id="player-hand" hx-target="this" hx-swap="outerHTML">
+            {% include '/partials/player_hand.html' %}
         </div>
     </div>
+    
+       <!-- Player Pairs Section -->
+       <div id="player-pairs" hx-target="this" hx-swap="outerHTML">
+        {% include '/partials/player_pairs.html' %}
+    </div>
+    <!-- Computer's Turn Message Section -->
+    <div id="computer-message" >
+        {% if message %}
+            <p>{{ message }}</p>
+            {% if not session['is_player_turn'] %}
+                <!-- Display these buttons only when it's the computer's turn -->
+                <form action="{{ url_for('computer_request_response') }}" method="post" hx-target="#computer-message" hx-swap="outerHTML">
+                    <button type="submit" name="response" value="Yes" class="yes-button">Yes</button>
+                    <button type="submit" name="response" value="Go Fish" class="go-fish-button">Go Fish</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
 
-    <!-- Player Pairs Button Section -->
-    <form action="{{ url_for('view_pairs') }}" method="get" hx-target="#player-pairs" hx-swap="innerHTML">
-        <button type="submit" class="player-pairs-button">
-            <div class="player-pairs">
-                <h3>Your Pairs</h3>
-                {% for card in player_pairs %}
-                <div class="card-stack">
-                    <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="small-card">
-                </div>
-                {% endfor %}
-            </div>
-        </button>
+
+
+
+    <!-- Home Button Section -->
+    <form action="{{ url_for('home') }}" method="get">
+        <button type="submit" class="home-button">Home</button>
     </form>
 </div>
-
-<!-- Computer's Turn Request Section (Only visible when applicable) -->
-{% if message and "Computer asks for" in message %}
-<div class="computer-turn-request">
-    <p>{{ message }}</p>
-    <form action="{{ url_for('computer_request_response') }}" method="post" hx-target="#game-content" hx-swap="innerHTML">
-        <button type="submit" name="response" value="Yes" class="yes-button">Yes</button>
-        <button type="submit" name="response" value="Go Fish" class="go-fish-button">Go Fish</button>
-    </form>
-</div>
-{% endif %}
-
-<!-- Home Button Section -->
-<form action="{{ url_for('home') }}" method="get">
-    <button type="submit" class="home-button">Home</button>
-</form>
 {% endblock %}

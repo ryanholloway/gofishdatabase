@@ -3,6 +3,9 @@ from cards import build_deck, identify_remove_pairs
 import random
 from DBcm import UseDatabase
 
+
+
+
 db_config= {
     'host': 'localhost',
     'database':'gofishDB',
@@ -57,48 +60,66 @@ def start_game():
 
 @app.get('/game')
 def game():
-   return render_template('game.html', player=session['player'], computer=session['computer'],player_pairs=session['player_pairs'], computer_pairs=session['computer_pairs'])
+    return render_template(
+        'game.html', 
+        player=session['player'], 
+        computer=session['computer'], 
+        player_pairs=session['player_pairs'], 
+        computer_pairs=session['computer_pairs']
+    )
 
 @app.post('/player_turn')
 def player_turn():
     if session['player']:
-        selected_card=request.form['selected_card']
-        value=selected_card.split(" ")[0]
-
-        match=next((card for card in session['computer'] if card.startswith(value)), None)
+        selected_card = request.form['selected_card']
+        value = selected_card.split(" ")[0]
+        
+        match = next((card for card in session['computer'] if card.startswith(value)), None)
         if match:
             session['player'].append(session['computer'].pop(session['computer'].index(match)))
         else:
             if session['deck']:
                 session['player'].append(session['deck'].pop())
-
-    session['player'], pairs = identify_remove_pairs(session['player'])
-    session['player_pairs'].extend(pairs)
-    session['computer'], pairs = identify_remove_pairs(session['computer'])
-    session['computer_pairs'].extend(pairs)
-
-
+    
+    session['player'], player_pairs = identify_remove_pairs(session['player'])
+    session['player_pairs'].extend(player_pairs)
+    session['computer'], computer_pairs = identify_remove_pairs(session['computer'])
+    session['computer_pairs'].extend(computer_pairs)
+    
     if not session['player']:
-        return redirect(url_for('result', outcome='Player Won! You ran out of Cards'))
+        return render_template('result.html', outcome='Player Won! You ran out of Cards')
     elif not session['computer']:
-        return redirect(url_for('result', outcome='Computer Won! Computer ran out of Cards'))
+        return render_template('result.html', outcome='Computer Won! Computer ran out of Cards')
     
     computer_message = computer_turn()
 
-    session['player'], pairs = identify_remove_pairs(session['player'])
-    session['player_pairs'].extend(pairs)
-    session['computer'], pairs = identify_remove_pairs(session['computer'])
-    session['computer_pairs'].extend(pairs)
+    session['player'], player_pairs = identify_remove_pairs(session['player'])
+    session['player_pairs'].extend(player_pairs)
+    session['computer'], computer_pairs = identify_remove_pairs(session['computer'])
+    session['computer_pairs'].extend(computer_pairs)
 
     if not session['player']:
-        return redirect(url_for('result', outcome='Player Won! You ran out of Cards'))
+        return render_template('result.html', outcome='Player Won! You ran out of Cards')
     elif not session['computer']:
-        return redirect(url_for('result', outcome='Computer Won! Computer ran out of Cards'))
-    
+        return render_template('result.html', outcome='Computer Won! Computer ran out of Cards')
 
-    return render_template('game.html', player=session['player'], computer=session['computer'], 
-                           player_pairs=session['player_pairs'], computer_pairs=session['computer_pairs'], 
-                           message=computer_message)
+    if request.headers.get('HX-Request'):
+        target = request.headers.get('HX-Target')
+        if target == "#player-hand":
+            return render_template('partials/player_hand.html', player=session['player'])
+        elif target == "#computer-pairs":
+            return render_template('partials/computer_pairs.html', computer_pairs=session['computer_pairs'])
+        elif target == "#computer-message":
+            return computer_message
+        
+    return render_template(
+        'game.html',
+        player=session['player'],
+        computer=session['computer'],
+        player_pairs=session['player_pairs'],
+        computer_pairs=session['computer_pairs'],
+        message=computer_message,
+    )
 
 def computer_turn():
     session['is_player_turn']=False
@@ -117,13 +138,13 @@ def computer_request_response():
     player_hand = session['player']
     computer_hand = session['computer']
     deck = session['deck']
-    
+
     if response == 'Yes':
         matching_card = next((card for card in player_hand if card.startswith(card_value)), None)
         if matching_card:
             computer_hand.append(player_hand.pop(player_hand.index(matching_card)))
             message = f"Computer took your {matching_card}."
-        else: #so you cant lie to the computer
+        else:
             if deck:
                 new_card = deck.pop()
                 computer_hand.append(new_card)
@@ -133,15 +154,38 @@ def computer_request_response():
             new_card = deck.pop()
             computer_hand.append(new_card)
             message = "Computer drew a card."
-
-    # Update pairs and session variables after the computer's action
+    
+    # Update pairs for both player and computer
     computer_hand, pairs = identify_remove_pairs(computer_hand)
     session['computer_pairs'].extend(pairs)
     session['player'] = player_hand
     session['computer'] = computer_hand
     session['deck'] = deck
-    session['is_player_turn']=True
-    return redirect(url_for('game', message=message))
+    session['is_player_turn'] = True
+    
+    # Only return the necessary parts to be updated
+    if request.headers.get('HX-Request'):
+        target = request.headers.get('HX-Target')
+        if target == "#player-hand":
+            return render_template('partials/player_hand.html', player=session['player'])
+        elif target == "#computer-hand":
+            return render_template('partials/computer_hand.html', computer=session['computer'])
+        elif target == "#player-pairs":
+            return render_template('partials/player_pairs.html', player_pairs=session['player_pairs'])
+        elif target == "#computer-pairs":
+            return render_template('partials/computer_pairs.html', computer_pairs=session['computer_pairs'])
+        elif target == "#computer-message":
+            return render_template('partials/computer_message.html', message=message)
+
+    # Return updated partials for the whole game if not HX-Request
+    return render_template(
+        'game.html', 
+        player=session['player'],
+        computer=session['computer'],
+        player_pairs=session['player_pairs'],
+        computer_pairs=session['computer_pairs'],
+        message=message
+    )
 
 
 @app.get('/result')

@@ -1,0 +1,9 @@
+<form action="{{ url_for('player_turn') }}" method="post" hx-target="#player-hand" hx-swap="outerHTML">
+    {% for card in player %}
+        <label class="card-label">
+            <input type="radio" name="selected_card" value="{{ card }}" class="hidden-radio" required>
+            <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="card-image">
+        </label>
+    {% endfor %}
+    <button type="submit" class="ask-button">Ask for Card</button>
+</form>
