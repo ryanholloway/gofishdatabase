@@ -18,8 +18,8 @@ This is a web-based version of the **Go Fish** card game, built using **Flask** 
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/yourusername/gofish-web-game.git
-cd gofish-web-game
+git clone https://github.com/ryanholloway/gofishdatabase.git
+cd gofishdatabase
 ```
 
 ### Step 2: Install Dependencies
