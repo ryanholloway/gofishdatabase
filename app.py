@@ -60,6 +60,9 @@ def start_game():
 
 @app.get('/game')
 def game():
+    app.logger.debug(f"Session in game route: {session}")
+    
+    session['is_player_turn'] = True
     return render_template(
         'game.html', 
         player=session['player'], 
@@ -216,6 +219,7 @@ def result():
 @app.get('/view_pairs')
 def view_pairs():
     player_pairs=session.get('player_pairs',[])
+    app.logger.debug(f"Session before view_pairs: {session}")
     return render_template('view_pairs.html', player_pairs=player_pairs)
 
 @app.get('/leaderboard')
