@@ -187,7 +187,7 @@ def leaderboard():
             JOIN games g ON p.id = g.player_id
             WHERE g.winner = 'Player'
             GROUP BY p.handle
-            ORDER BY highscore DESC
+            ORDER BY games_won DESC, highscore DESC
             LIMIT 10
         """)
         leaderboard_data = db.fetchall()
@@ -202,6 +202,7 @@ def leaderboard():
         ]
 
     return render_template('leaderboard.html', leaderboard=leaderboard_data_dict)
+
 
 
 

@@ -295,14 +295,12 @@ h1{
     margin-top: 1rem;
 }
 
-/* Ensure the leaderboard section looks good */
 .leaderboard {
     text-align: center;
     margin: 2rem auto;
     width: 80%;
 }
 
-/* Style the table */
 .leaderboard table {
     width: 100%;
     margin: 1rem auto;
@@ -311,21 +309,17 @@ h1{
     font-size: 1rem;
 }
 
-/* Style the table headers */
 .leaderboard th, .leaderboard td {
     border: 1px solid #ccc;  /* Light gray borders */
     padding: 0.8rem;  /* Add padding inside cells */
     text-align: center;
 }
-
-/* Style for table headers (bold and colored) */
 .leaderboard th {
     background-color: #007BFF;
     color: white;
     text-transform: uppercase;
 }
 
-/* Button to go back */
 .back-btn {
     display: inline-block;
     margin-top: 1rem;
@@ -338,5 +332,17 @@ h1{
 
 .back-btn:hover {
     background-color: #0056b3;
+}
+.home-button{
+    background-color: #ff0a0a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    left: 3%;
+    bottom:90%;
 }
 

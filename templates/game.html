@@ -1,19 +1,19 @@
 {% extends "base.html" %}
+
 {% block content %}
-
-
 <div class="game-container">
+    <!-- Computer Pairs Section -->
     <div class="computer-pairs">
         <h3>Computer's Pairs</h3>
         {% for card in computer_pairs %}
-        <div class = "card-stack">
+        <div class="card-stack">
             <img src="{{ url_for('static', filename='cards/2B.svg') }}" alt="{{ card }}" class="small-card">
         </div>
         {% endfor %}
     </div>
 
     <div class="main-game">
-
+        <!-- Computer's Hand Section -->
         <div class="computer-hand">
             <h2>Computer's Hand:</h2>
             {% for _ in computer %}
@@ -21,12 +21,13 @@
             {% endfor %}
         </div>
 
+        <!-- Player's Hand Section -->
         <div class="player-hand">
             <h2>Your Hand:</h2>
-            <form action="{{ url_for('player_turn') }}" method="post" class="card-selection-form">
+            <form action="{{ url_for('player_turn') }}" method="post" class="card-selection-form" hx-target="#game-content" hx-swap="innerHTML">
                 {% for card in player %}
                     <label class="card-label">
-                        <input type="radio" name="selected_card" value="{{ card }}" class="hidden-radio"  required>
+                        <input type="radio" name="selected_card" value="{{ card }}" class="hidden-radio" required>
                         <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="card-image">
                     </label>
                 {% endfor %}
@@ -35,33 +36,34 @@
         </div>
     </div>
 
-    <form action="{{ url_for('view_pairs') }}" method="get">
+    <!-- Player Pairs Button Section -->
+    <form action="{{ url_for('view_pairs') }}" method="get" hx-target="#player-pairs" hx-swap="innerHTML">
         <button type="submit" class="player-pairs-button">
-        <div class="player-pairs">
-            <h3>Your Pairs</h3>
-            {% for card in player_pairs %}
-            <div class = "card-stack">
-                <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="small-card">
+            <div class="player-pairs">
+                <h3>Your Pairs</h3>
+                {% for card in player_pairs %}
+                <div class="card-stack">
+                    <img src="{{ url_for('static', filename='cards/' + card + '.svg') }}" alt="{{ card }}" class="small-card">
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-    </button>
+        </button>
     </form>
 </div>
 
-
+<!-- Computer's Turn Request Section (Only visible when applicable) -->
 {% if message and "Computer asks for" in message %}
 <div class="computer-turn-request">
     <p>{{ message }}</p>
-    <form action="{{ url_for('computer_request_response') }}" method="post">
+    <form action="{{ url_for('computer_request_response') }}" method="post" hx-target="#game-content" hx-swap="innerHTML">
         <button type="submit" name="response" value="Yes" class="yes-button">Yes</button>
         <button type="submit" name="response" value="Go Fish" class="go-fish-button">Go Fish</button>
     </form>
 </div>
 {% endif %}
 
-
-   
+<!-- Home Button Section -->
+<form action="{{ url_for('home') }}" method="get">
+    <button type="submit" class="home-button">Home</button>
 </form>
-
 {% endblock %}
