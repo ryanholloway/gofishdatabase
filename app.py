@@ -227,17 +227,36 @@ def leaderboard():
     with UseDatabase(db_config) as db:
         db.execute("""
             SELECT 
-                p.handle, 
-                COUNT(g.id) AS games_won, 
-                MAX(g.score) AS highscore, 
-                DATE_FORMAT(MAX(g.played_at), '%H:%i %d/%m/%Y') AS highscore_achieved_at 
-            FROM players p
-            JOIN games g ON p.id = g.player_id
-            WHERE g.winner = 'Player'
-            GROUP BY p.handle
-            ORDER BY games_won DESC, highscore DESC
-            LIMIT 10
-        """)
+                handle, 
+                games_won, 
+                highscore, 
+                DATE_FORMAT(highscore_achieved_at, '%H:%i %d/%m/%Y') AS highscore_achieved_at
+                FROM (
+                -- Stats for players
+                SELECT 
+                    p.handle, 
+                    COUNT(g.id) AS games_won, 
+                    MAX(g.score) AS highscore, 
+                    MAX(g.played_at) AS highscore_achieved_at
+                FROM players p
+                JOIN games g ON p.id = g.player_id
+                WHERE g.winner = 'Player'
+                GROUP BY p.handle
+
+                UNION ALL
+
+                -- Stats for the computer
+                SELECT 
+                    'Computer' AS handle, 
+                    COUNT(id) AS games_won, 
+                    MAX(score) AS highscore, 
+                    MAX(played_at) AS highscore_achieved_at
+                FROM games
+                WHERE winner = 'Computer'
+                ) combined
+                ORDER BY games_won DESC, highscore DESC
+                LIMIT 10
+            """)
         leaderboard_data = db.fetchall()
         leaderboard_data_dict = [
             {
