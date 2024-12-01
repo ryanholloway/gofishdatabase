@@ -3,9 +3,6 @@ from cards import build_deck, identify_remove_pairs
 import random
 from DBcm import UseDatabase
 
-
-
-
 db_config= {
     'host': 'localhost',
     'database':'gofishDB',
@@ -25,6 +22,7 @@ def register():
             return render_template('register.html', error="Handle cannot be empty!")
     
         with UseDatabase(db_config) as db:
+            print("In Database on register")
             db.execute("INSERT IGNORE INTO players (handle) VALUES (%s)", (handle,))
             db.execute("SELECT id FROM players WHERE handle = %s", (handle,))
             result = db.fetchone()
@@ -60,7 +58,6 @@ def start_game():
 
 @app.get('/game')
 def game():
-    app.logger.debug(f"Session in game route: {session}")
     
     session['is_player_turn'] = True
     return render_template(
@@ -76,11 +73,13 @@ def player_turn():
     if session['player']:
         selected_card = request.form['selected_card']
         value = selected_card.split(" ")[0]
-        
+
         match = next((card for card in session['computer'] if card.startswith(value)), None)
+        session['successful_requests'] = session.get('successful_requests', 0) + 1
         if match:
             session['player'].append(session['computer'].pop(session['computer'].index(match)))
         else:
+            session['failed_requests'] = session.get('failed_requests', 0) + 1
             if session['deck']:
                 session['player'].append(session['deck'].pop())
     
@@ -90,9 +89,9 @@ def player_turn():
     session['computer_pairs'].extend(computer_pairs)
     
     if not session['player']:
-        return render_template('result.html', outcome='Player Won! You ran out of Cards')
+        return redirect(url_for('result', outcome='Player Won! You ran out of Cards'))
     elif not session['computer']:
-        return render_template('result.html', outcome='Computer Won! Computer ran out of Cards')
+        return redirect(url_for('result', outcome='Computer Won! Computer ran out of Cards'))
     
     computer_message = computer_turn()
 
@@ -102,9 +101,10 @@ def player_turn():
     session['computer_pairs'].extend(computer_pairs)
 
     if not session['player']:
-        return render_template('result.html', outcome='Player Won! You ran out of Cards')
+        return redirect(url_for('result', outcome='Player Won! You ran out of Cards'))
     elif not session['computer']:
-        return render_template('result.html', outcome='Computer Won! Computer ran out of Cards')
+        return redirect(url_for('result', outcome='Computer Won! Computer ran out of Cards'))
+
 
     if request.headers.get('HX-Request'):
         target = request.headers.get('HX-Target')
@@ -190,9 +190,10 @@ def computer_request_response():
         message=message
     )
 
-
 @app.get('/result')
 def result():
+
+    print("In results")
     outcome = request.args.get('outcome', 'Game Over')
     player_pairs=session.get('player_pairs',[])
     computer_pairs=session.get('computer_pairs',[])
@@ -205,13 +206,15 @@ def result():
         winner = 'Computer'
     else:
         outcome = "It's a Draw!"
+
     score = len(player_pairs)
 
     with UseDatabase(db_config) as db:
-        db.execute("""
-            INSERT INTO games (player_id, winner, score)
-            VALUES (%s, %s, %s)
-        """, (session['player_id'], winner, score))
+        try:
+            result = db.execute("""INSERT INTO games (player_id, winner, score) VALUES (%s, %s, %s)""", (session['player_id'], winner, score))
+            app.logger.debug(f"Insert result: {result}")
+        except Exception as e:
+            app.logger.error(f"Error inserting into database: {e}")
 
     return render_template('result.html', outcome=outcome, player_pairs=player_pairs, computer_pairs=computer_pairs)
 
@@ -231,31 +234,28 @@ def leaderboard():
                 games_won, 
                 highscore, 
                 DATE_FORMAT(highscore_achieved_at, '%H:%i %d/%m/%Y') AS highscore_achieved_at
-                FROM (
-                -- Stats for players
+            FROM (
                 SELECT 
                     p.handle, 
-                    COUNT(g.id) AS games_won, 
+                    COUNT(CASE WHEN g.winner = 'Player' THEN 1 END) AS games_won, 
                     MAX(g.score) AS highscore, 
                     MAX(g.played_at) AS highscore_achieved_at
                 FROM players p
                 JOIN games g ON p.id = g.player_id
-                WHERE g.winner = 'Player'
                 GROUP BY p.handle
 
                 UNION ALL
 
-                -- Stats for the computer
                 SELECT 
                     'Computer' AS handle, 
-                    COUNT(id) AS games_won, 
+                    COUNT(CASE WHEN winner = 'Computer' THEN 1 END) AS games_won, 
                     MAX(score) AS highscore, 
                     MAX(played_at) AS highscore_achieved_at
                 FROM games
-                WHERE winner = 'Computer'
-                ) combined
-                ORDER BY games_won DESC, highscore DESC
-                LIMIT 10
+                WHERE winner IN ('Computer', 'Draw')
+            ) combined
+            ORDER BY games_won DESC, highscore DESC
+            LIMIT 10;
             """)
         leaderboard_data = db.fetchall()
         leaderboard_data_dict = [
