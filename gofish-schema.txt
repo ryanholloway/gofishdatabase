@@ -18,15 +18,38 @@ CREATE TABLE games (
     FOREIGN KEY (player_id) REFERENCES players(id)
 );
 
-CREATE VIEW leaderboard AS
+-- I have this as OR REPLACE as when i set it up this wasnt what my leaderboard view was
+
+CREATE OR REPLACE VIEW leaderboard AS
 SELECT 
-    p.handle, 
-    COUNT(g.id) AS games_won, 
-    MAX(g.score) AS highscore, 
-    MAX(g.played_at) AS highscore_achieved_at 
-FROM players p
-JOIN games g ON p.id = g.player_id
-WHERE g.winner = 'Player'
-GROUP BY p.handle
-ORDER BY highscore DESC
+    handle, 
+    games_won, 
+    highscore, 
+    DATE_FORMAT(highscore_achieved_at, '%H:%i %d/%m/%Y') AS highscore_achieved_at
+FROM (
+    -- Subquery for Players
+    SELECT 
+        p.handle, 
+        COUNT(CASE WHEN g.winner = 'Player' THEN 1 END) AS games_won, 
+        MAX(g.score) AS highscore, 
+        MAX(g.played_at) AS highscore_achieved_at
+    FROM players p
+    JOIN games g ON p.id = g.player_id
+    WHERE g.winner = 'Player'
+    GROUP BY p.handle
+
+    UNION ALL
+
+    -- Subquery for Computer
+    SELECT 
+        'Computer' AS handle, 
+        COUNT(CASE WHEN g.winner = 'Computer' THEN 1 END) AS games_won, 
+        MAX(g.score) AS highscore, 
+        MAX(g.played_at) AS highscore_achieved_at
+    FROM games g
+    WHERE g.winner IN ('Computer', 'Draw')
+    GROUP BY g.winner
+) combined
+ORDER BY games_won DESC, highscore DESC
 LIMIT 10;
+

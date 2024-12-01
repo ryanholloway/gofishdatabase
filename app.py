@@ -229,33 +229,7 @@ def view_pairs():
 def leaderboard():
     with UseDatabase(db_config) as db:
         db.execute("""
-            SELECT 
-                handle, 
-                games_won, 
-                highscore, 
-                DATE_FORMAT(highscore_achieved_at, '%H:%i %d/%m/%Y') AS highscore_achieved_at
-            FROM (
-                SELECT 
-                    p.handle, 
-                    COUNT(CASE WHEN g.winner = 'Player' THEN 1 END) AS games_won, 
-                    MAX(g.score) AS highscore, 
-                    MAX(g.played_at) AS highscore_achieved_at
-                FROM players p
-                JOIN games g ON p.id = g.player_id
-                GROUP BY p.handle
-
-                UNION ALL
-
-                SELECT 
-                    'Computer' AS handle, 
-                    COUNT(CASE WHEN winner = 'Computer' THEN 1 END) AS games_won, 
-                    MAX(score) AS highscore, 
-                    MAX(played_at) AS highscore_achieved_at
-                FROM games
-                WHERE winner IN ('Computer', 'Draw')
-            ) combined
-            ORDER BY games_won DESC, highscore DESC
-            LIMIT 10;
+            select * from leaderboard;
             """)
         leaderboard_data = db.fetchall()
         leaderboard_data_dict = [
