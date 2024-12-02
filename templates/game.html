@@ -1,48 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="game-container">
-    <!-- Computer Pairs Section -->
-    <div id="computer-pairs" hx-target="this" hx-swap="outerHTML">
-        {% include '/partials/computer_pairs.html' %}
-    </div>
-
-    <div class="main-game">
-        <!-- Computer's Hand Section -->
-        <div id="computer-hand" hx-target="this" hx-swap="outerHTML">
-            {% include '/partials/computer_hand.html' %}
-        </div>
-
-        <!-- Player's Hand Section -->
-        <div id="player-hand" hx-target="this" hx-swap="outerHTML">
-            {% include '/partials/player_hand.html' %}
-        </div>
-    </div>
-    
-       <!-- Player Pairs Section -->
-       <div id="player-pairs" hx-target="this" hx-swap="outerHTML">
-        {% include '/partials/player_pairs.html' %}
-    </div>
-    <!-- Computer's Turn Message Section -->
-    <div id="computer-message" >
-        {% if message %}
-            <p>{{ message }}</p>
-            {% if not session['is_player_turn'] %}
-                <!-- Display these buttons only when it's the computer's turn -->
-                <form action="{{ url_for('computer_request_response') }}" method="post" hx-target="#computer-message" hx-swap="outerHTML">
-                    <button type="submit" name="response" value="Yes" class="yes-button">Yes</button>
-                    <button type="submit" name="response" value="Go Fish" class="go-fish-button">Go Fish</button>
-                </form>
-            {% endif %}
-        {% endif %}
-    </div>
-
-
-
-
-    <!-- Home Button Section -->
-    <form action="{{ url_for('home') }}" method="get">
-        <button type="submit" class="home-button">Home</button>
-    </form>
+<div id="game-container">
+    {% include '/partials/game_container.html' %}
 </div>
 {% endblock %}

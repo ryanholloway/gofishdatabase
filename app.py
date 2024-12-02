@@ -8,12 +8,24 @@ db_config= {
     'database':'gofishDB',
     'user':'gofishuser',
     'password':'gofishpassword',
-    'charset': 'utf8mb4',  # Specify the character set
-    'collation': 'utf8mb4_general_ci'  # Use a compatible collation
+    #Specifically an issue on college PC \/
+    #'charset': 'utf8mb4',  
+    #'collation': 'utf8mb4_general_ci' 
 }
 
 app = Flask(__name__)
 app.secret_key = 'DlssKvulFvbJoljrlkAolJpwoly' 
+
+
+
+def prepare_game_state(message=None):
+    return {
+        'player': session['player'],
+        'computer': session['computer'],
+        'player_pairs': session['player_pairs'],
+        'computer_pairs': session['computer_pairs'],
+        'message': message,
+    }
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/register', methods=['GET', 'POST'])
@@ -59,15 +71,10 @@ def start_game():
     return redirect(url_for('game'))
 
 @app.get('/game')
-def game():
-    
+def game():  
     session['is_player_turn'] = True
     return render_template(
-        'game.html', 
-        player=session['player'], 
-        computer=session['computer'], 
-        player_pairs=session['player_pairs'], 
-        computer_pairs=session['computer_pairs']
+        'game.html', **prepare_game_state()
     )
 
 @app.post('/player_turn')
@@ -107,24 +114,7 @@ def player_turn():
     elif not session['computer']:
         return redirect(url_for('result', outcome='Computer Won! Computer ran out of Cards'))
 
-
-    if request.headers.get('HX-Request'):
-        target = request.headers.get('HX-Target')
-        if target == "#player-hand":
-            return render_template('partials/player_hand.html', player=session['player'])
-        elif target == "#computer-pairs":
-            return render_template('partials/computer_pairs.html', computer_pairs=session['computer_pairs'])
-        elif target == "#computer-message":
-            return computer_message
-        
-    return render_template(
-        'game.html',
-        player=session['player'],
-        computer=session['computer'],
-        player_pairs=session['player_pairs'],
-        computer_pairs=session['computer_pairs'],
-        message=computer_message,
-    )
+    return render_template('partials/game_container.html', **prepare_game_state(computer_message))
 
 def computer_turn():
     session['is_player_turn']=False
@@ -138,6 +128,7 @@ def computer_turn():
 
 @app.post('/computer_request_response')
 def computer_request_response():
+    print("In computer_request_response")
     response = request.form['response']
     card_value = session['computer_card_request']
     player_hand = session['player']
@@ -167,30 +158,9 @@ def computer_request_response():
     session['computer'] = computer_hand
     session['deck'] = deck
     session['is_player_turn'] = True
-    
-    # Only return the necessary parts to be updated
-    if request.headers.get('HX-Request'):
-        target = request.headers.get('HX-Target')
-        if target == "#player-hand":
-            return render_template('partials/player_hand.html', player=session['player'])
-        elif target == "#computer-hand":
-            return render_template('partials/computer_hand.html', computer=session['computer'])
-        elif target == "#player-pairs":
-            return render_template('partials/player_pairs.html', player_pairs=session['player_pairs'])
-        elif target == "#computer-pairs":
-            return render_template('partials/computer_pairs.html', computer_pairs=session['computer_pairs'])
-        elif target == "#computer-message":
-            return render_template('partials/computer_message.html', message=message)
 
-    # Return updated partials for the whole game if not HX-Request
-    return render_template(
-        'game.html', 
-        player=session['player'],
-        computer=session['computer'],
-        player_pairs=session['player_pairs'],
-        computer_pairs=session['computer_pairs'],
-        message=message
-    )
+
+    return render_template('game.html', **prepare_game_state(message))
 
 @app.get('/result')
 def result():
