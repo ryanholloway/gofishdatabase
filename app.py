@@ -7,7 +7,9 @@ db_config= {
     'host': 'localhost',
     'database':'gofishDB',
     'user':'gofishuser',
-    'password':'gofishpassword'
+    'password':'gofishpassword',
+    'charset': 'utf8mb4',  # Specify the character set
+    'collation': 'utf8mb4_general_ci'  # Use a compatible collation
 }
 
 app = Flask(__name__)
