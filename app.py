@@ -9,8 +9,8 @@ db_config= {
     'user':'gofishuser',
     'password':'gofishpassword',
     #Specifically an issue on college PC \/
-    #'charset': 'utf8mb4',  
-    #'collation': 'utf8mb4_general_ci' 
+    'charset': 'utf8mb4',  
+    'collation': 'utf8mb4_general_ci' 
 }
 
 app = Flask(__name__)
@@ -164,7 +164,7 @@ def computer_request_response():
 
 @app.get('/result')
 def result():
-
+    winBonus=2
     print("In results")
     outcome = request.args.get('outcome', 'Game Over')
     player_pairs=session.get('player_pairs',[])
@@ -173,13 +173,15 @@ def result():
     if len(player_pairs) > len(computer_pairs):
         outcome = 'Player Won! You had more Pairs'
         winner = 'Player'
+        winBonus=2
     elif len(player_pairs) < len(computer_pairs):
         outcome = 'Computer Won! Computer had more Pairs'
         winner = 'Computer'
+        winBonus=1
     else:
         outcome = "It's a Draw!"
 
-    score = len(player_pairs)
+    score = len(player_pairs)*winBonus
 
     with UseDatabase(db_config) as db:
         try:
