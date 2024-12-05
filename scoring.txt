@@ -1,0 +1,1 @@
+Score is multiplied by 2 if the player wins. Otherwise its just the amount of pairs the player has
